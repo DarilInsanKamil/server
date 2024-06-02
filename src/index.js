@@ -19,8 +19,14 @@ const pool = new Pool({
 app.get("/", async (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'));
 })
+app.get("/about", async (req, res) => {
+    res.sendFile(path.join(__dirname, '/about.html'));
+})
+app.get("/sign-in", async (req, res) => {
+    res.sendFile(path.join(__dirname, '/signin.html'));
+})
 
-app.get("/book", async (req, res) => {
+app.get("/api/book", async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM book');
         res.send(rows)
@@ -30,7 +36,8 @@ app.get("/book", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 });
-app.get("/book/:id", async (req, res) => {
+
+app.get("/api/book/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const { rows } = await pool.query(`SELECT * FROM book WHERE id = $1`, [id]);
@@ -44,7 +51,7 @@ app.get("/book/:id", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 });
-app.post("/book", async (req, res) => {
+app.post("/api/book", async (req, res) => {
     try {
         const { name, author } = req.body;
         const newBook = await pool.query(
@@ -55,7 +62,7 @@ app.post("/book", async (req, res) => {
         res.status(500).send({ err: err.message });
     }
 })
-app.put("/book/:id", async (req, res) => {
+app.put("/api/book/:id", async (req, res) => {
     try {
         const { name, author } = req.body;
         const { id } = req.params;
@@ -69,7 +76,7 @@ app.put("/book/:id", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 })
-app.delete("/book/:id", async (req, res) => {
+app.delete("/api/book/:id", async (req, res) => {
     try {
         const { id } = req.params;
         if (!id) {
