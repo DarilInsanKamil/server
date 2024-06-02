@@ -1,10 +1,20 @@
-import express from "express";
-import getPool from "./db";
-import bodyParser from "body-parser";
+const express = require("express");
+const bodyParser = require("body-parser");
+const { Pool } = require('pg');
 
 const app = express();
 const port = 3000;
 app.use(bodyParser.json());
+
+
+const pool = new Pool({
+    user: 'postgres',
+    password: 'postgres',
+    host: '18.136.208.197',
+    port: 5432,
+    database: 'bookstore',
+  });
+
 
 app.get("/", async (req, res) => {
     res.send("welcome to api")
@@ -12,9 +22,7 @@ app.get("/", async (req, res) => {
 
 app.get("/book", async (req, res) => {
     try {
-        const pool = getPool();
         const { rows } = await pool.query('SELECT * FROM book');
-        pool.end();
         res.send(rows)
         res.status(200).send('Get book success');
     } catch (error) {
@@ -24,10 +32,8 @@ app.get("/book", async (req, res) => {
 });
 app.get("/book/:id", async (req, res) => {
     try {
-        const pool = getPool();
         const { id } = req.params;
         const { rows } = await pool.query(`SELECT * FROM book WHERE id = $1`, [id]);
-        pool.end();
         if (rows.length > 0) {
             res.status(200).send(rows[0]);
         } else {
@@ -40,11 +46,10 @@ app.get("/book/:id", async (req, res) => {
 });
 app.post("/book", async (req, res) => {
     try {
-        const pool = getPool()
+        // const pool = getPool()
         const { name, author } = req.body;
         const newBook = await pool.query(
             `INSERT INTO book (name, author) VALUES ($1, $2) RETURNING *`, [name, author])
-        pool.end();
         res.status(201).send(newBook.rows[0])
     } catch (err) {
         console.log(err);
@@ -53,14 +58,12 @@ app.post("/book", async (req, res) => {
 })
 app.put("/book/:id", async (req, res) => {
     try {
-        const pool = getPool();
         const { name, author } = req.body;
         const { id } = req.params;
         if (!name || !author) {
             res.status(400).send("all field are required")
         }
         const updateBook = await pool.query(`UPDATE book SET name = $1, author = $2 WHERE id = $3 RETURNING *`, [name, author, id]);
-        pool.end();
         res.status(200).json(updateBook.rows[0]).send("update success");
     } catch (error) {
         console.error(error.message);
@@ -69,13 +72,11 @@ app.put("/book/:id", async (req, res) => {
 })
 app.delete("/book/:id", async (req, res) => {
     try {
-        const pool = getPool();
         const { id } = req.params;
         if (!id) {
             res.status(400).send("id not found");
         }
         const { rows } = await pool.query(`DELETE FROM book WHERE id = $1 RETURNING *`, [id]);
-        pool.end();
         if (rows.length > 0) {
             res.status(200).send("delete book success");
         } else {
