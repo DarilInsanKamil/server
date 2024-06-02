@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { Pool } = require('pg');
-
+const path = require('path');
 const app = express();
 const port = 3000;
 app.use(bodyParser.json());
@@ -17,7 +17,7 @@ const pool = new Pool({
 
 
 app.get("/", async (req, res) => {
-    res.send("welcome to api")
+    res.sendFile(path.join(__dirname, '/index.html'));
 })
 
 app.get("/book", async (req, res) => {
@@ -46,7 +46,6 @@ app.get("/book/:id", async (req, res) => {
 });
 app.post("/book", async (req, res) => {
     try {
-        // const pool = getPool()
         const { name, author } = req.body;
         const newBook = await pool.query(
             `INSERT INTO book (name, author) VALUES ($1, $2) RETURNING *`, [name, author])
