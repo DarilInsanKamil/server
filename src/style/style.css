@@ -42,12 +42,12 @@ header {
   letter-spacing: -4px;
 }
 .desc-profile {
-  margin-top: 72px;
+  margin-top: 16px;
   width: 700px;
   line-height: normal;
 }
 .sosmed {
-    margin-top: 40px;
+    margin-top: 24px;
     display: flex;
     gap: 40px;
 }
