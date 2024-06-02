@@ -16,15 +16,16 @@ const pool = new Pool({
     database: 'bookstore',
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/", async (req, res) => {
-    res.sendFile(path.join(__dirname, './page/index.html'));
+    res.sendFile(path.join(__dirname, './public/index.html'));
 })
 app.get("/project", async (req, res) => {
-    res.sendFile(path.join(__dirname, './page/project.html'));
+    res.sendFile(path.join(__dirname, './public/project.html'));
 })
 app.get("/about", async (req, res) => {
-    res.sendFile(path.join(__dirname, './page/about.html'));
+    res.sendFile(path.join(__dirname, './public/about.html'));
 })
 app.get("/sign-in", async (req, res) => {
     res.sendFile(path.join(__dirname, './page/signin.html'));
