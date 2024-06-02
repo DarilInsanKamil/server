@@ -1,0 +1,72 @@
+* {
+  /* outline: 1px red solid; */
+}
+.ul-container {
+  display: flex;
+  gap: 120px;
+  justify-content: center;
+}
+header {
+  display: flex;
+  justify-content: center;
+}
+.nav-container {
+  position: fixed;
+  top: 28px;
+  width: 92%;
+  padding: 16px;
+  border-radius: 100px;
+  background-color: black;
+  opacity: 0.85;
+  backdrop-filter: blur(10px);
+}
+.nav-items a {
+  color: white;
+  text-decoration: none;
+}
+.hero-section {
+  padding: 10px;
+}
+.herocontainer {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+.sub-herocontainer {
+  margin: 164px 0px 164px 0px;
+  grid-column-start: 2;
+  grid-column-end: 12;
+}
+.name {
+  font-size: 100px;
+  font-weight: bold;
+  letter-spacing: -4px;
+}
+.desc-profile {
+  margin-top: 72px;
+  width: 700px;
+  line-height: normal;
+}
+.sosmed {
+    margin-top: 40px;
+    display: flex;
+    gap: 40px;
+}
+.icon {
+    padding: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.icon:hover {
+    background-color: rgb(242, 242, 242);
+    transition: all;
+}
+.project {
+    height: 100vh;
+    background-color: black;
+    display: flex;
+    color: wheat;
+    justify-content: center;
+    align-items: center;
+}

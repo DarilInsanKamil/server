@@ -20,6 +20,9 @@ const pool = new Pool({
 app.get("/", async (req, res) => {
     res.sendFile(path.join(__dirname, './page/index.html'));
 })
+app.get("/project", async (req, res) => {
+    res.sendFile(path.join(__dirname, './page/project.html'));
+})
 app.get("/about", async (req, res) => {
     res.sendFile(path.join(__dirname, './page/about.html'));
 })
