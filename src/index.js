@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { Pool } = require('pg');
 const path = require('path');
+const { hash, compare } = require("bcrypt");
 const app = express();
 const port = 3000;
 app.use(bodyParser.json());
@@ -13,19 +14,57 @@ const pool = new Pool({
     host: '18.136.208.197',
     port: 5432,
     database: 'bookstore',
-  });
+});
 
 
 app.get("/", async (req, res) => {
-    res.sendFile(path.join(__dirname, '/index.html'));
+    res.sendFile(path.join(__dirname, './page/index.html'));
 })
 app.get("/about", async (req, res) => {
-    res.sendFile(path.join(__dirname, '/about.html'));
+    res.sendFile(path.join(__dirname, './page/about.html'));
 })
 app.get("/sign-in", async (req, res) => {
-    res.sendFile(path.join(__dirname, '/signin.html'));
+    res.sendFile(path.join(__dirname, './page/signin.html'));
 })
 
+//API USER
+app.post("/api/sign-in", async (req, res) => {
+    try {
+        const { username, password } = await req.body;
+        const existingUser = await pool.query(`SELECT * FROM users WHERE username = $1`, [username]);
+        if (existingUser.rows.length > 0) {
+            res.status(409).send("user with this name already exist")
+        }
+        const hashPassword = await hash(password, 10);
+
+        const newUser = await pool.query(`INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`, [username, hashPassword]);
+
+        res.status(201).send("user created").json(newUser.rows[0])
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ err: error.message });
+    }
+})
+app.post("/api/login", async (req, res) => {
+    try {
+        const { username, password } = await req.body;
+        const existingUser = await pool.query(`SELECT * FROM users WHERE username = $1`, [username]);
+        if (existingUser.rows.length === 0) {
+            res.status(409).send("user not found")
+        }
+        const user = existingUser.rows[0];
+        const passwordMatch = await compare(password, user.password);
+        if (!passwordMatch) {
+            res.status(401).send("incorrect password")
+        }
+        res.send("Login success").status(200);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ err: error.message });
+    }
+})
+
+// API BOOK
 app.get("/api/book", async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM book');
@@ -36,7 +75,6 @@ app.get("/api/book", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 });
-
 app.get("/api/book/:id", async (req, res) => {
     try {
         const { id } = req.params;
@@ -92,6 +130,7 @@ app.delete("/api/book/:id", async (req, res) => {
 
     }
 })
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
 }); 
