@@ -4,17 +4,26 @@ const { Pool } = require('pg');
 const path = require('path');
 const { hash, compare } = require("bcrypt");
 const app = express();
+
+const cors = require('cors')
 const port = 3000;
+
 app.use(bodyParser.json());
 
+app.use(bodyParser.urlencoded({ extended: true }))
 
 const pool = new Pool({
     user: 'postgres',
     password: 'postgres',
     host: '18.136.208.197',
+    // host: 'localhost',
     port: 5432,
     database: 'bookstore',
 });
+
+//cors
+app.use(cors())
+// swagger(app)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -32,16 +41,16 @@ app.get("/sign-in", async (req, res) => {
 })
 
 //API USER
-app.post("/api/sign-in", async (req, res) => {
+app.post("/api/signup", async (req, res) => {
     try {
-        const { username, password } = await req.body;
-        const existingUser = await pool.query(`SELECT * FROM users WHERE username = $1`, [username]);
-        if (existingUser.rows.length > 0) {
-            res.status(409).send("user with this name already exist")
+        const { email, username, password } = req.body;
+        const existingEmail = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
+        if (existingEmail.rows.length > 0) {
+            res.status(409).send("Email already exist")
         }
         const hashPassword = await hash(password, 10);
 
-        const newUser = await pool.query(`INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`, [username, hashPassword]);
+        const newUser = await pool.query(`INSERT INTO users (email ,username, password) VALUES ($1, $2, $3) RETURNING *`, [email, username, hashPassword]);
 
         res.status(201).send("user created").json(newUser.rows[0])
     } catch (error) {
@@ -51,12 +60,26 @@ app.post("/api/sign-in", async (req, res) => {
 })
 app.post("/api/login", async (req, res) => {
     try {
-        const { username, password } = await req.body;
-        const existingUser = await pool.query(`SELECT * FROM users WHERE username = $1`, [username]);
-        if (existingUser.rows.length === 0) {
-            res.status(409).send("user not found")
+        const { identifier, password } = await req.body;
+
+        if (!identifier || !password) {
+            return res.status(400).send("Identifier and password are required");
         }
-        const user = existingUser.rows[0];
+
+        let query;
+        if (identifier.includes('@')) {
+            query = `SELECT * FROM users WHERE email = $1`;
+        } else {
+            query = `SELECT * FROM users WHERE username = $1`;
+        }
+       
+        const result = await pool.query(query, [identifier]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).send("User not found");
+        }
+
+        const user = result.rows[0];
         const passwordMatch = await compare(password, user.password);
         if (!passwordMatch) {
             res.status(401).send("incorrect password")
@@ -72,6 +95,16 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/book", async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM book');
+        res.send(rows)
+        res.status(200).send('Get book success');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ err: error.message });
+    }
+});
+app.get("/api/user", async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT * FROM users');
         res.send(rows)
         res.status(200).send('Get book success');
     } catch (error) {

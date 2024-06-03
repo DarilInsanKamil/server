@@ -1,0 +1,77 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Book API",
+    "description": "A sample API that uses a book as an example to demonstrate features in the swagger-2.0 specification",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "host": "darill.my.id",
+  "basePath": "/api",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/book": {
+      "get": {
+        "description": "Returns all books from the system that the user has access to",
+        "operationId": "findBooks",
+        "produces": [
+          "application/json",
+          "application/xml",
+          "text/xml",
+          "text/html"
+        ],
+        "responses": {
+          "200": {
+            "description": "book response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#definitions/Book"
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#definitions/ErrorModel"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new book",
+        "operationId": "addBook",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Book",
+            "in": "body",
+            "description": "book to add",
+            "required": "true",
+            "schema": {
+              "$ref": "#definitions/NewBook"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "pet response",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          }
+        },
+        "default": {
+          "description": "unexpected error",
+          "schema": {
+            "$ref": "#/definitions/ErrorModel"
+          }
+        }
+      }
+    }
+  }
+}
