@@ -1,11 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <main>project</main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style/reset.css" />
+    <link rel="stylesheet" href="../style/project.css" />
+    <title>Project</title>
+  </head>
+  <body>
+    <header>
+      <nav class="nav-container">
+        <ul class="ul-container">
+          <li class="nav-items"><a href="/">Home</a></li>
+          <li class="nav-items"><a href="./about">About</a></li>
+          <li class="nav-items"><a href="./project">Project</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section>
+        <h3>Bookstore</h3>
+        <p>Project sederhana menggunakan express JS</p>
+      </section>
+      <div id="output"></div>
+      <section class="modal hidden">
+        <div class="flex">
+          <img
+            src="https://avatars.githubusercontent.com/u/62628408?s=96&v=4"
+            width="50px"
+            height="50px"
+            alt="user"
+          />
+          <button class="btn-close">⨉</button>
+        </div>
+        <div>
+          <h3>Stay in touch</h3>
+          <p>
+            This is a dummy newsletter form so don't bother trying to test it.
+            Not that I expect you to, anyways. :)
+          </p>
+        </div>
+
+        <input type="email" id="email" placeholder="brendaneich@js.com" />
+        <button class="btn">Do Something</button>
+      </section>
+
+      <div class="overlay hidden"></div>
+      <button class="btn btn-open">Open Modal</button>
+    </main>
+    <script src="./script.js" type="text/javascript"></script>
+  </body>
 </html>
