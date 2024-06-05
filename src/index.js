@@ -12,21 +12,21 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const pool = new Pool({
-    user: 'postgres',
-    password: 'postgres',
-    host: '18.136.208.197',
-    // host: 'localhost',
-    port: 5432,
-    database: 'bookstore',
-});
+// const pool = new Pool({
+//     user: 'postgres',
+//     password: 'postgres',
+//     host: '18.136.208.197',
+//     // host: 'localhost',
+//     port: 5432,
+//     database: 'bookstore',
+// });
 
 //cors
 const bookController = require("./book/book.controller");
 
 app.use(cors())
 
-app.use("/router", bookController)
+app.use("/api", bookController)
 
 
 app.use(express.static(path.join(__dirname, 'public')));

@@ -2,48 +2,39 @@
 const url = "https://darill.my.id/api/book";
 const container = document.getElementById("output");
 
-const modal = document.querySelector(".modal");
-const overlay = document.querySelector(".overlay");
-const openModalBtn = document.querySelector(".btn-open");
-const closeModalBtn = document.querySelector(".btn-close");
-
-// close modal function
-const closeModal = function () {
-  modal.classList.add("hidden");
-  overlay.classList.add("hidden");
-};
-
-// close the modal when the close button and overlay is clicked
-closeModalBtn.addEventListener("click", closeModal);
-overlay.addEventListener("click", closeModal);
-
-// close modal when the Esc key is pressed
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-    closeModal();
-  }
-});
-
-// open modal function
-const openModal = function () {
-  modal.classList.remove("hidden");
-  overlay.classList.remove("hidden");
-};
-// open modal event
-openModalBtn.addEventListener("click", openModal);
-
-
 async function fetchData() {
-    const res = await fetch(url);
-    const data = await res.json();
+  const res = await fetch(url);
+  const data = await res.json();
 
-    data.forEach((element) => {
-        const row = document.createElement("ul");
-        row.innerHTML = `
-                <li key=${element.id}>${element.name} ${element.author}</li>
-            `;
-        container.appendChild(row);
-    });
+  data.forEach((element) => {
+    const row = document.createElement("ul");
+    row.innerHTML = `
+    <div class="listBook">
+    <div>
+      <p class="name-book">${element.name}</p>
+      <p class="author-book">${element.author}</p>
+    </div>
+    <div class="button-container">
+      <button class="delete-button" onclick="deleteBook(${element.id})">Hapus</button>
+      <button class="edit-button">Edit</button>
+    </div>
+    </div>`;
+    container.appendChild(row);
+  });
 }
 fetchData();
 // Call the function to fetch data
+
+
+const deleteBook = async(id) => {
+  try {
+    const res = await  fetch(`https://darill.my.id/api/book/${id}`, {
+      method: 'DELETE'
+    })
+    if (res.ok) {
+      location.reload();
+    }
+  } catch (error) {
+    console.error(error.message)
+  }
+}

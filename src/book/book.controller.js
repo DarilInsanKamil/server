@@ -3,11 +3,11 @@ const { getAllBooks, getBookById, postBook, updateBookById, deleteBookById } = r
 
 const router = express.Router();
 
-router.get("/api/book", async (req, res) => {
+router.get("/book", async (req, res) => {
     const books = await getAllBooks();
     res.json({ data: books })
 })
-router.get("/api/book/:id", async (req, res) => {
+router.get("/book/:id", async (req, res) => {
     try {
         const bookId = parseInt(req.params.id);
         const book = await getBookById(bookId);
@@ -17,7 +17,7 @@ router.get("/api/book/:id", async (req, res) => {
         res.status(500).send(error.message);
     }
 })
-router.post("/api/book", async (req, res) => {
+router.post("/book", async (req, res) => {
     try {
         const newBookData = req.body;
         const book = await postBook(newBookData);
@@ -30,7 +30,7 @@ router.post("/api/book", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 })
-router.put("/api/book/:id", async (req, res) => {
+router.put("/book/:id", async (req, res) => {
     try {
         const bookId = parseInt(req.params.id);
         const bookData = req.body;
@@ -47,7 +47,7 @@ router.put("/api/book/:id", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 })
-router.patch("/api/book/:id", async (req, res) => {
+router.patch("/book/:id", async (req, res) => {
     try {
         const bookId = parseInt(req.params.id);
         const bookData = req.body;
@@ -64,7 +64,7 @@ router.patch("/api/book/:id", async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 })
-router.delete("/api/book/:id", async (req, res) => {
+router.delete("/book/:id", async (req, res) => {
     try {
         const bookId = parseInt(req.params.id);
         await deleteBookById(bookId);
